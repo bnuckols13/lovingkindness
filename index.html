@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kindness Architects — Loving-Kindness Interactive Experience</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-teal: #5EEAD4;
+            --deep-teal: #14B8A6;
+            --soft-purple: #C084FC;
+            --warm-rose: #FDA4AF;
+            --calm-blue: #93C5FD;
+            --midnight: #1E293B;
+            --slate: #475569;
+            --pearl: #F8FAFC;
+            --sage-green: #87A878;
+            --soft-sage: #A8C09A;
+            --warm-sand: #F5DEB3;
+            --gradient-calm: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-nature: linear-gradient(135deg, #5EEAD4 0%, #93C5FD 100%);
+            --gradient-warm: linear-gradient(135deg, #FDA4AF 0%, #C084FC 100%);
+            --gradient-earth: linear-gradient(135deg, #87A878 0%, #7BA7BC 100%);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
+            min-height: 100vh;
+            color: var(--midnight);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Floating Background */
+        .bg-circle {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(70px);
+            opacity: 0.25;
+            animation: float 22s infinite ease-in-out;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .bg-circle1 {
+            width: 320px;
+            height: 320px;
+            background: var(--primary-teal);
+            top: -120px;
+            right: -80px;
+        }
+
+        .bg-circle2 {
+            width: 380px;
+            height: 380px;
+            background: var(--soft-purple);
+            bottom: -140px;
+            left: -120px;
+            animation-delay: -6s;
+        }
+
+        .bg-circle3 {
+            width: 260px;
+            height: 260px;
+            background: var(--warm-rose);
+            top: 45%;
+            right: 8%;
+            animation-delay: -12s;
+        }
+
+        .bg-circle4 {
+            width: 200px;
+            height: 200px;
+            background: var(--sage-green);
+            top: 20%;
+            left: -60px;
+            animation-delay: -8s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .header-icon {
+            font-size: 2.8rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: var(--gradient-calm);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            color: var(--slate);
+            font-size: 1.1rem;
+            font-weight: 400;
+            margin-bottom: 0.25rem;
+        }
+
+        .meta-line {
+            font-size: 0.85rem;
+            color: var(--sage-green);
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 2.5rem;
+            animation: fadeIn 0.8s ease 0.2s both;
+        }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--slate);
+            opacity: 0.5;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            flex: 1;
+        }
+
+        .progress-label.active {
+            color: var(--deep-teal);
+            opacity: 1;
+        }
+
+        .progress-label.completed {
+            color: var(--sage-green);
+            opacity: 0.8;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(94, 234, 212, 0.15);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-nature);
+            transition: width 0.6s ease;
+            border-radius: 10px;
+            width: 0%;
+        }
+
+        /* Phase Sections */
+        .phase {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .phase.active {
+            display: block;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-nature);
+        }
+
+        .card.warm::before {
+            background: var(--gradient-warm);
+        }
+
+        .card.earth::before {
+            background: var(--gradient-earth);
+        }
+
+        .card.calm::before {
+            background: var(--gradient-calm);
+        }
+
+        .card h2 {
+            color: var(--midnight);
+            margin-bottom: 1rem;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card h3 {
+            color: var(--deep-teal);
+            margin-bottom: 0.75rem;
+            font-size: 1.2rem;
+        }
+
+        .icon-badge {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            background: var(--gradient-nature);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .icon-badge.warm {
+            background: var(--gradient-warm);
+        }
+
+        .icon-badge.earth {
+            background: var(--gradient-earth);
+        }
+
+        .icon-badge.calm {
+            background: var(--gradient-calm);
+        }
+
+        /* Facilitator Script Blocks */
+        .script-block {
+            background: linear-gradient(135deg, rgba(94, 234, 212, 0.06) 0%, rgba(147, 197, 253, 0.06) 100%);
+            border-left: 3px solid var(--primary-teal);
+            padding: 1.25rem 1.5rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.25rem 0;
+            font-size: 0.98rem;
+            line-height: 1.75;
+            color: var(--slate);
+        }
+
+        .script-block.warm {
+            background: linear-gradient(135deg, rgba(253, 164, 175, 0.06) 0%, rgba(192, 132, 252, 0.06) 100%);
+            border-left-color: var(--warm-rose);
+        }
+
+        .script-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--deep-teal);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Warm-up Chat Area */
+        .chat-area {
+            background: linear-gradient(135deg, rgba(253, 164, 175, 0.08) 0%, rgba(192, 132, 252, 0.08) 100%);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .chat-input-row {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .chat-input-row input {
+            flex: 1;
+            padding: 0.85rem 1.1rem;
+            border: 2px solid rgba(94, 234, 212, 0.3);
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input-row input:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+            box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.1);
+        }
+
+        .chat-responses {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            min-height: 30px;
+        }
+
+        .chat-bubble {
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            color: var(--midnight);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            animation: popIn 0.3s ease;
+            position: relative;
+        }
+
+        .chat-bubble .remove-btn {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--warm-rose);
+            border: none;
+            color: white;
+            font-size: 0.65rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .chat-bubble:hover .remove-btn {
+            opacity: 1;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* Four Wishes */
+        .wishes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        .wish-card {
+            text-align: center;
+            padding: 1.5rem 1rem;
+            border-radius: 16px;
+            border: 2px solid rgba(94, 234, 212, 0.15);
+            background: white;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .wish-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-color: var(--primary-teal);
+        }
+
+        .wish-card.glow {
+            border-color: var(--primary-teal);
+            box-shadow: 0 0 20px rgba(94, 234, 212, 0.2);
+        }
+
+        .wish-icon {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .wish-card h4 {
+            color: var(--deep-teal);
+            margin-bottom: 0.35rem;
+            font-size: 1.05rem;
+        }
+
+        .wish-card p {
+            color: var(--slate);
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        /* Scenario Selection */
+        .scenario-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .scenario-option {
+            padding: 1.25rem 1.5rem;
+            border-radius: 16px;
+            border: 2px solid rgba(94, 234, 212, 0.2);
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .scenario-option:hover {
+            border-color: var(--primary-teal);
+            transform: translateX(4px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .scenario-option.selected {
+            border-color: var(--deep-teal);
+            background: linear-gradient(135deg, rgba(94, 234, 212, 0.08) 0%, rgba(147, 197, 253, 0.05) 100%);
+        }
+
+        .scenario-letter {
+            width: 36px;
+            height: 36px;
+            min-width: 36px;
+            border-radius: 50%;
+            background: var(--gradient-nature);
+            color: white;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+        }
+
+        .scenario-option.selected .scenario-letter {
+            background: var(--gradient-calm);
+        }
+
+        .scenario-text {
+            color: var(--slate);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* Kindness Kit Builder */
+        .kit-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+            margin: 1.5rem 0;
+        }
+
+        .kit-quadrant {
+            border-radius: 16px;
+            padding: 1.25rem;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .kit-quadrant:hover {
+            transform: scale(1.02);
+        }
+
+        .kit-quadrant.safe {
+            background: linear-gradient(135deg, rgba(94, 234, 212, 0.1) 0%, rgba(94, 234, 212, 0.03) 100%);
+            border: 2px solid rgba(94, 234, 212, 0.25);
+        }
+
+        .kit-quadrant.happy {
+            background: linear-gradient(135deg, rgba(253, 164, 175, 0.1) 0%, rgba(253, 164, 175, 0.03) 100%);
+            border: 2px solid rgba(253, 164, 175, 0.25);
+        }
+
+        .kit-quadrant.healthy {
+            background: linear-gradient(135deg, rgba(135, 168, 120, 0.12) 0%, rgba(135, 168, 120, 0.03) 100%);
+            border: 2px solid rgba(135, 168, 120, 0.25);
+        }
+
+        .kit-quadrant.ease {
+            background: linear-gradient(135deg, rgba(192, 132, 252, 0.1) 0%, rgba(192, 132, 252, 0.03) 100%);
+            border: 2px solid rgba(192, 132, 252, 0.25);
+        }
+
+        .kit-quadrant h4 {
+            font-size: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .kit-quadrant.safe h4 { color: var(--deep-teal); }
+        .kit-quadrant.happy h4 { color: #e8667a; }
+        .kit-quadrant.healthy h4 { color: #5d7a47; }
+        .kit-quadrant.ease h4 { color: #9b5de5; }
+
+        .kit-quadrant textarea {
+            flex: 1;
+            padding: 0.85rem;
+            border: 1.5px solid rgba(0,0,0,0.08);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            resize: none;
+            background: rgba(255,255,255,0.7);
+            transition: all 0.3s ease;
+            line-height: 1.6;
+        }
+
+        .kit-quadrant textarea:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+            box-shadow: 0 0 0 2px rgba(94, 234, 212, 0.1);
+            background: white;
+        }
+
+        /* Hardest Quadrant Poll */
+        .poll-section {
+            margin: 1.5rem 0;
+        }
+
+        .poll-options {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-top: 0.75rem;
+        }
+
+        .poll-btn {
+            padding: 0.6rem 1.25rem;
+            border-radius: 50px;
+            border: 2px solid rgba(94, 234, 212, 0.3);
+            background: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--slate);
+            transition: all 0.3s ease;
+        }
+
+        .poll-btn:hover {
+            border-color: var(--primary-teal);
+            transform: translateY(-2px);
+        }
+
+        .poll-btn.selected {
+            background: var(--gradient-nature);
+            color: white;
+            border-color: transparent;
+        }
+
+        /* Gentle Bridge / Reflection */
+        .reflection-box {
+            background: linear-gradient(135deg, rgba(253, 164, 175, 0.08) 0%, rgba(192, 132, 252, 0.08) 100%);
+            border-radius: 16px;
+            padding: 1.75rem;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        .reflection-box p {
+            color: var(--slate);
+            line-height: 1.75;
+            font-size: 1rem;
+        }
+
+        .reflection-box .highlight {
+            color: var(--deep-teal);
+            font-weight: 600;
+        }
+
+        /* Homework Card */
+        .homework-card {
+            background: linear-gradient(135deg, rgba(94, 234, 212, 0.08) 0%, rgba(147, 197, 253, 0.08) 100%);
+            border: 2px dashed rgba(94, 234, 212, 0.3);
+            border-radius: 16px;
+            padding: 1.75rem;
+            margin: 1.5rem 0;
+        }
+
+        .homework-card h4 {
+            color: var(--deep-teal);
+            margin-bottom: 0.75rem;
+            font-size: 1.05rem;
+        }
+
+        .homework-card p {
+            color: var(--slate);
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        /* Closing Round Robin */
+        .closing-input-area {
+            margin: 1.5rem 0;
+        }
+
+        .closing-input-area textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(94, 234, 212, 0.3);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .closing-input-area textarea:focus {
+            outline: none;
+            border-color: var(--primary-teal);
+            box-shadow: 0 0 0 3px rgba(94, 234, 212, 0.1);
+        }
+
+        /* Summary View */
+        .summary-section {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border: 1px solid rgba(94, 234, 212, 0.15);
+        }
+
+        .summary-section h4 {
+            color: var(--deep-teal);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .summary-section p {
+            color: var(--slate);
+            line-height: 1.6;
+            font-size: 0.93rem;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 2rem;
+            background: var(--gradient-nature);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(94, 234, 212, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(94, 234, 212, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--deep-teal);
+            border: 2px solid var(--primary-teal);
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(94, 234, 212, 0.08);
+            box-shadow: none;
+        }
+
+        .btn-warm {
+            background: var(--gradient-warm);
+            box-shadow: 0 4px 15px rgba(253, 164, 175, 0.3);
+        }
+
+        .btn-warm:hover {
+            box-shadow: 0 6px 25px rgba(253, 164, 175, 0.4);
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            gap: 1rem;
+        }
+
+        .nav-buttons .spacer {
+            flex: 1;
+        }
+
+        /* Facilitator Notes Toggle */
+        .facilitator-toggle {
+            margin-top: 1.5rem;
+        }
+
+        .facilitator-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(192, 132, 252, 0.08);
+            border: 1px solid rgba(192, 132, 252, 0.2);
+            border-radius: 8px;
+            color: #7c3aed;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .facilitator-toggle-btn:hover {
+            background: rgba(192, 132, 252, 0.15);
+        }
+
+        .facilitator-notes {
+            display: none;
+            margin-top: 1rem;
+            padding: 1.25rem;
+            background: rgba(192, 132, 252, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(192, 132, 252, 0.15);
+        }
+
+        .facilitator-notes.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .facilitator-notes p, .facilitator-notes li {
+            color: var(--slate);
+            font-size: 0.88rem;
+            line-height: 1.7;
+        }
+
+        .facilitator-notes strong {
+            color: #7c3aed;
+        }
+
+        /* Utility */
+        .text-muted {
+            color: var(--slate);
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        .mt-1 { margin-top: 1rem; }
+        .mt-2 { margin-top: 1.5rem; }
+        .mb-1 { margin-bottom: 1rem; }
+        .mb-2 { margin-bottom: 1.5rem; }
+        .text-center { text-align: center; }
+
+        .tag {
+            display: inline-block;
+            background: rgba(94, 234, 212, 0.12);
+            padding: 0.2rem 0.65rem;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            color: var(--deep-teal);
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .container { padding: 1rem; }
+            .card { padding: 1.5rem; }
+            .kit-grid { grid-template-columns: 1fr; }
+            .wishes-grid { grid-template-columns: 1fr 1fr; }
+            .nav-buttons { flex-direction: column; }
+            .nav-buttons .spacer { display: none; }
+        }
+
+        @media (max-width: 480px) {
+            .wishes-grid { grid-template-columns: 1fr; }
+            .poll-options { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-circle bg-circle1"></div>
+    <div class="bg-circle bg-circle2"></div>
+    <div class="bg-circle bg-circle3"></div>
+    <div class="bg-circle bg-circle4"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <span class="header-icon">🏗️</span>
+            <h1>Kindness Architects</h1>
+            <p class="subtitle">Loving-Kindness for People Who Think That Sounds Corny</p>
+            <p class="meta-line">DBT Mindfulness &bull; Handout 8 &bull; ~60 min</p>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-container">
+            <div class="progress-labels">
+                <span class="progress-label active" onclick="goToPhase(0)">Warm-Up</span>
+                <span class="progress-label" onclick="goToPhase(1)">The Skill</span>
+                <span class="progress-label" onclick="goToPhase(2)">Build</span>
+                <span class="progress-label" onclick="goToPhase(3)">The Twist</span>
+                <span class="progress-label" onclick="goToPhase(4)">Summary</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- ============ PHASE 0: WARM-UP ============ -->
+        <div class="phase active" id="phase0">
+            <div class="card">
+                <h2>
+                    <div class="icon-badge warm">💬</div>
+                    "Kindness Is Weird"
+                </h2>
+                <span class="tag">10 min &bull; Warm-Up</span>
+
+                <div class="script-block mt-1">
+                    <div class="script-label">Facilitator Script</div>
+                    So today's skill is literally called "loving-kindness" which — I know. It sounds like a greeting card. But here's the thing: it's actually one of the oldest psychological technologies on earth. Buddhist monks have been training in this for 2,500 years, and brain scans show it physically changes the parts of your brain involved in empathy and emotional regulation. So it's less Hallmark, more <em>mental athletics</em>.
+                </div>
+
+                <div class="script-block warm" style="margin-top: 1.5rem;">
+                    <div class="script-label">Before we get into it — let's check in</div>
+                    Before we jump into the skill, I want to hear from everybody. Take a second and think about this:
+                </div>
+
+                <div style="background: linear-gradient(135deg, rgba(253, 164, 175, 0.08) 0%, rgba(192, 132, 252, 0.08) 100%); border-radius: 16px; padding: 1.75rem; margin: 1.5rem 0;">
+                    <h3 style="margin-bottom: 1.25rem;">Discussion Check-In</h3>
+                    
+                    <div style="padding: 1rem 1.25rem; background: white; border-radius: 12px; margin-bottom: 1rem; border-left: 3px solid var(--warm-rose);">
+                        <p style="color: var(--midnight); font-weight: 600; margin-bottom: 0.25rem;">What's the kindest thing someone has done for you?</p>
+                        <p class="text-muted" style="font-size: 0.88rem;">Doesn't have to be big. Sometimes the small ones stick with you more.</p>
+                    </div>
+
+                    <p class="text-muted" style="font-size: 0.9rem; margin-bottom: 1rem;">Give everyone a minute to think, then go around. No pressure to explain <em>why</em> it mattered — just what happened.</p>
+
+                    <details style="margin-top: 1rem;">
+                        <summary style="cursor: pointer; color: var(--deep-teal); font-weight: 600; font-size: 0.9rem;">Follow-up prompts if the group needs a nudge</summary>
+                        <div style="margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.6rem;">
+                            <div style="padding: 0.75rem 1rem; background: rgba(255,255,255,0.7); border-radius: 10px;">
+                                <p class="text-muted" style="font-size: 0.9rem;">"Did it surprise you? Like, was it someone you wouldn't have expected it from?"</p>
+                            </div>
+                            <div style="padding: 0.75rem 1rem; background: rgba(255,255,255,0.7); border-radius: 10px;">
+                                <p class="text-muted" style="font-size: 0.9rem;">"What about something kind you noticed between other people — not even involving you?"</p>
+                            </div>
+                            <div style="padding: 0.75rem 1rem; background: rgba(255,255,255,0.7); border-radius: 10px;">
+                                <p class="text-muted" style="font-size: 0.9rem;">"Has anyone ever done something kind for you that you didn't appreciate until later?"</p>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+
+                <div class="facilitator-toggle">
+                    <button class="facilitator-toggle-btn" onclick="toggleNotes('notes0')">
+                        📋 Facilitator Notes
+                    </button>
+                    <div class="facilitator-notes" id="notes0">
+                        <p><strong>Purpose:</strong> This primes the affective state of warmth through <em>recall</em> rather than instruction. Hearing other people's stories builds group connection early. Let it breathe — 2–3 minutes of sharing is great, more is fine if it's flowing.</p>
+                        <p class="mt-1"><strong>What to listen for:</strong> Notice who shares something about being seen or noticed vs. something about being helped or rescued. That distinction often maps onto attachment style and can inform how you frame the rest of the session for different members.</p>
+                        <p class="mt-1"><strong>If it's quiet:</strong> Go first. Share your own briefly, keep it small and ordinary. That sets the tone better than any prompt will.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nav-buttons">
+                <div class="spacer"></div>
+                <button class="btn" onclick="goToPhase(1)">Next →</button>
+            </div>
+        </div>
+
+        <!-- ============ PHASE 1: SKILL TEACH ============ -->
+        <div class="phase" id="phase1">
+            <div class="card">
+                <h2>
+                    <div class="icon-badge">🧠</div>
+                    The Four Wishes
+                </h2>
+                <span class="tag">10 min &bull; Skill Teach</span>
+
+                <div class="script-block mt-1">
+                    <div class="script-label">Facilitator Script</div>
+                    Here's how the skill works. Loving-kindness is basically directing four wishes toward someone. You start with someone easy — someone you already care about, even a pet — and then you expand outward to other people.
+                </div>
+
+                <div class="wishes-grid">
+                    <div class="wish-card" onclick="glowWish(this)">
+                        <span class="wish-icon">🛡️</span>
+                        <h4>May you be safe</h4>
+                        <p>Not getting hurt. Feeling like you can let your guard down.</p>
+                    </div>
+                    <div class="wish-card" onclick="glowWish(this)">
+                        <span class="wish-icon">☀️</span>
+                        <h4>May you be happy</h4>
+                        <p>Actually enjoying stuff. Not just getting through the day.</p>
+                    </div>
+                    <div class="wish-card" onclick="glowWish(this)">
+                        <span class="wish-icon">🌿</span>
+                        <h4>May you be healthy</h4>
+                        <p>Your body and brain working with you, not against you.</p>
+                    </div>
+                    <div class="wish-card" onclick="glowWish(this)">
+                        <span class="wish-icon">🕊️</span>
+                        <h4>May you live with ease</h4>
+                        <p>Less fighting everything. Things just being... okay for a minute.</p>
+                    </div>
+                </div>
+
+                <div class="script-block">
+                    <div class="script-label">DBT Connection</div>
+                    In DBT, this lives in the mindfulness module. It practices <strong>observing</strong> — you're noticing what it feels like to wish someone well. And it practices <strong>non-judgmental stance</strong> — you're offering the wishes without deciding whether someone "deserves" them. It also works as <strong>opposite action</strong> when you're stuck in anger or shame, because the action urge in those emotions is to attack, and this is the behavioral opposite.
+                </div>
+
+                <div class="script-block warm">
+                    <div class="script-label">Key Insight</div>
+                    The cool part is <strong>you don't have to <em>feel</em> kind for it to work</strong>. It's a practice, not a feeling. You just do the reps.
+                </div>
+
+                <div class="facilitator-toggle">
+                    <button class="facilitator-toggle-btn" onclick="toggleNotes('notes1')">
+                        📋 Facilitator Notes
+                    </button>
+                    <div class="facilitator-notes" id="notes1">
+                        <p><strong>Keep it brief and concrete.</strong> The skill teach should be efficient — save the depth for the activity itself. Emphasize that this is more like a workout than a vibe. The "you don't have to feel kind" line lands well with skeptical teens.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="goToPhase(0)">← Back</button>
+                <div class="spacer"></div>
+                <button class="btn" onclick="goToPhase(2)">Next →</button>
+            </div>
+        </div>
+
+        <!-- ============ PHASE 2: KINDNESS KIT BUILDER ============ -->
+        <div class="phase" id="phase2">
+            <div class="card earth">
+                <h2>
+                    <div class="icon-badge earth">🏗️</div>
+                    Kindness Architects — Build
+                </h2>
+                <span class="tag">25 min &bull; Core Activity</span>
+
+                <div class="script-block mt-1">
+                    <div class="script-label">Facilitator Script</div>
+                    You're going to be a Kindness Architect. Your job is to design a "Kindness Kit" for a specific person. Not yourself. I'm going to give you a scenario, and you're going to figure out: what does this person need to hear, see, or experience to feel the four wishes — safe, happy, healthy, at ease?
+                </div>
+
+                <h3 class="mt-2">Choose Your Scenario</h3>
+                <div class="scenario-options">
+                    <div class="scenario-option" onclick="selectScenario(this, 'A')">
+                        <div class="scenario-letter">A</div>
+                        <p class="scenario-text">A 14-year-old who just moved to a new school and eats lunch alone every day.</p>
+                    </div>
+                    <div class="scenario-option" onclick="selectScenario(this, 'B')">
+                        <div class="scenario-letter">B</div>
+                        <p class="scenario-text">A 16-year-old whose best friend just ghosted them with no explanation.</p>
+                    </div>
+                    <div class="scenario-option" onclick="selectScenario(this, 'C')">
+                        <div class="scenario-letter">C</div>
+                        <p class="scenario-text">A 15-year-old who keeps comparing themselves to people on social media and feels like they're falling behind at everything.</p>
+                    </div>
+                </div>
+
+                <div id="kitBuilder" style="display:none;">
+                    <h3>Design Your Kindness Kit</h3>
+                    <p class="text-muted mb-1">In each quadrant, sketch or write what you'd put in this person's kit. Objects, places, songs, a text message, a wish — whatever. Get creative. No wrong answers.</p>
+                    
+                    <div class="kit-grid">
+                        <div class="kit-quadrant safe">
+                            <h4>🛡️ SAFE</h4>
+                            <textarea id="kitSafe" placeholder="What would help them feel like they can breathe?"></textarea>
+                        </div>
+                        <div class="kit-quadrant happy">
+                            <h4>☀️ HAPPY</h4>
+                            <textarea id="kitHappy" placeholder="What would actually make them smile?"></textarea>
+                        </div>
+                        <div class="kit-quadrant healthy">
+                            <h4>🌿 HEALTHY</h4>
+                            <textarea id="kitHealthy" placeholder="What would help their body and brain?"></textarea>
+                        </div>
+                        <div class="kit-quadrant ease">
+                            <h4>🕊️ AT EASE</h4>
+                            <textarea id="kitEase" placeholder="What would take some weight off?"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="poll-section">
+                        <h3>Real Quick</h3>
+                        <p class="text-muted">Which quadrant was hardest to fill?</p>
+                        <div class="poll-options">
+                            <button class="poll-btn" onclick="selectPoll(this)">🛡️ Safe</button>
+                            <button class="poll-btn" onclick="selectPoll(this)">☀️ Happy</button>
+                            <button class="poll-btn" onclick="selectPoll(this)">🌿 Healthy</button>
+                            <button class="poll-btn" onclick="selectPoll(this)">🕊️ At Ease</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="facilitator-toggle">
+                    <button class="facilitator-toggle-btn" onclick="toggleNotes('notes2')">
+                        📋 Facilitator Notes
+                    </button>
+                    <div class="facilitator-notes" id="notes2">
+                        <p><strong>Why this works virtually:</strong> The design-challenge format gives teens something to <em>do with their hands</em> during screen time. The camera-hold share is low-risk because they're showing their paper, not their face/emotions.</p>
+                        <p class="mt-1"><strong>Clinical data:</strong> The pattern of which quadrant teens find hardest to fill often maps directly onto their own unmet needs — but you don't have to say that out loud.</p>
+                        <p class="mt-1"><strong>Scenario design:</strong> The characters deliberately echo common ED-adjacent experiences (isolation, social comparison, relational rupture) without being explicitly about eating or bodies. This lets the material resonate without triggering content-specific defenses.</p>
+                        <p class="mt-1"><strong>Timing:</strong> Give 10–12 minutes for building. Play chill background music. Check in casually at the halfway mark.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="goToPhase(1)">← Back</button>
+                <div class="spacer"></div>
+                <button class="btn" onclick="goToPhase(3)">Continue →</button>
+            </div>
+        </div>
+
+        <!-- ============ PHASE 3: GENTLE BRIDGE ============ -->
+        <div class="phase" id="phase3">
+            <div class="card warm">
+                <h2>
+                    <div class="icon-badge warm">🌉</div>
+                    The Sneaky Part
+                </h2>
+                <span class="tag">10 min &bull; Wrap-Up</span>
+
+                <div class="reflection-box">
+                    <p style="font-size: 1.05rem; color: var(--midnight); font-weight: 500; margin-bottom: 1rem;">
+                        So here's the sneaky part of this exercise.
+                    </p>
+                    <p>
+                        Everything you just designed for that person?<br>
+                        <span class="highlight">You're allowed to wish all of that for yourself too.</span>
+                    </p>
+                    <p class="mt-1" style="font-size: 0.93rem; opacity: 0.8;">
+                        You don't have to do anything with that right now. Just tuck it away.
+                    </p>
+                </div>
+
+                <div class="homework-card">
+                    <h4>🧪 Totally Optional Homework</h4>
+                    <p>Pick one person this week — literally anyone — and silently run through the four wishes for them. In line at the store, on the bus, wherever.</p>
+                    <p class="mt-1"><em>"May you be safe. May you be happy. May you be healthy. May you live with ease."</em></p>
+                    <p class="mt-1">See what it does to your mood. That's it. That's the whole thing.</p>
+                </div>
+
+                <h3 class="mt-2">Closing Round</h3>
+                <p class="text-muted mb-1">What's one thing from your Kindness Kit that you liked?</p>
+                <div class="closing-input-area">
+                    <textarea id="closingShare" placeholder="The thing I liked most from my kit was..."></textarea>
+                </div>
+
+                <div class="facilitator-toggle">
+                    <button class="facilitator-toggle-btn" onclick="toggleNotes('notes3')">
+                        📋 Facilitator Notes
+                    </button>
+                    <div class="facilitator-notes" id="notes3">
+                        <p><strong>The intensity dial:</strong> The "gentle bridge" is deliberately understated. If a particular group has more capacity and trust, you can expand it. If they don't, you can skip the self-application entirely and still have taught the skill effectively through the design exercise. <em>The learning is already in the doing.</em></p>
+                        <p class="mt-1"><strong>For future sessions:</strong> You can build on this by having the group design a Kindness Kit for the "difficult person" category (someone they're angry at), which is where loving-kindness gets genuinely challenging and therapeutically powerful. Save that for a group with more cohesion.</p>
+                        <p class="mt-1"><strong>End on creative energy:</strong> The round-robin closing keeps the final energy creative, generative, and outward-facing rather than introspective or heavy.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="goToPhase(2)">← Back</button>
+                <div class="spacer"></div>
+                <button class="btn btn-warm" onclick="goToPhase(4)">See Summary →</button>
+            </div>
+        </div>
+
+        <!-- ============ PHASE 4: SUMMARY ============ -->
+        <div class="phase" id="phase4">
+            <div class="card calm">
+                <h2>
+                    <div class="icon-badge calm">📄</div>
+                    Your Session
+                </h2>
+
+                <div id="summaryContent">
+                    <!-- Populated dynamically -->
+                </div>
+
+                <div class="nav-buttons mt-2">
+                    <button class="btn btn-secondary" onclick="goToPhase(0)">Start Over</button>
+                    <div class="spacer"></div>
+                    <button class="btn" onclick="downloadSummary()">Download Summary</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let currentPhase = 0;
+        const totalPhases = 5;
+        let selectedScenario = null;
+        let selectedPollAnswer = null;
+
+        // Phase Navigation
+        function goToPhase(index) {
+            if (index === 4) buildSummary();
+
+            document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+            document.getElementById('phase' + index).classList.add('active');
+
+            // Update progress
+            const labels = document.querySelectorAll('.progress-label');
+            labels.forEach((label, i) => {
+                label.classList.remove('active', 'completed');
+                if (i === index) label.classList.add('active');
+                else if (i < index) label.classList.add('completed');
+            });
+
+            const progress = ((index) / (totalPhases - 1)) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+
+            currentPhase = index;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Wish Card Glow
+        function glowWish(card) {
+            card.classList.toggle('glow');
+        }
+
+        // Scenario Selection
+        function selectScenario(el, letter) {
+            document.querySelectorAll('.scenario-option').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedScenario = letter;
+            document.getElementById('kitBuilder').style.display = 'block';
+            document.getElementById('kitBuilder').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Poll
+        function selectPoll(btn) {
+            document.querySelectorAll('.poll-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedPollAnswer = btn.textContent.trim();
+        }
+
+        // Facilitator Notes Toggle
+        function toggleNotes(id) {
+            const notes = document.getElementById(id);
+            notes.classList.toggle('show');
+        }
+
+        // Build Summary
+        function buildSummary() {
+            const scenarioTexts = {
+                A: 'A 14-year-old who just moved to a new school and eats lunch alone every day.',
+                B: 'A 16-year-old whose best friend just ghosted them with no explanation.',
+                C: 'A 15-year-old who keeps comparing themselves to people on social media and feels like they\'re falling behind at everything.'
+            };
+
+            const safe = document.getElementById('kitSafe')?.value || '';
+            const happy = document.getElementById('kitHappy')?.value || '';
+            const healthy = document.getElementById('kitHealthy')?.value || '';
+            const ease = document.getElementById('kitEase')?.value || '';
+            const closing = document.getElementById('closingShare')?.value || '';
+
+            let html = '';
+
+            if (selectedScenario) {
+                html += `
+                    <div class="summary-section">
+                        <h4>🎯 Chosen Scenario</h4>
+                        <p>${scenarioTexts[selectedScenario]}</p>
+                    </div>
+                `;
+            }
+
+            if (safe || happy || healthy || ease) {
+                html += `
+                    <div class="summary-section">
+                        <h4>🏗️ Your Kindness Kit</h4>
+                        ${safe ? `<p><strong>🛡️ Safe:</strong> ${safe}</p>` : ''}
+                        ${happy ? `<p><strong>☀️ Happy:</strong> ${happy}</p>` : ''}
+                        ${healthy ? `<p><strong>🌿 Healthy:</strong> ${healthy}</p>` : ''}
+                        ${ease ? `<p><strong>🕊️ At Ease:</strong> ${ease}</p>` : ''}
+                    </div>
+                `;
+            }
+
+            if (selectedPollAnswer) {
+                html += `
+                    <div class="summary-section">
+                        <h4>📊 Hardest Quadrant</h4>
+                        <p>${selectedPollAnswer}</p>
+                    </div>
+                `;
+            }
+
+            if (closing) {
+                html += `
+                    <div class="summary-section">
+                        <h4>⭐ Favorite Kit Item</h4>
+                        <p>${closing}</p>
+                    </div>
+                `;
+            }
+
+            html += `
+                <div class="reflection-box mt-1">
+                    <p><span class="highlight">Don't forget:</span> Everything you designed for someone else? You're allowed to wish it for yourself too.</p>
+                    <p class="mt-1" style="font-style: italic; opacity: 0.8;">May you be safe. May you be happy. May you be healthy. May you live with ease.</p>
+                </div>
+            `;
+
+            if (!html.includes('summary-section')) {
+                html = `<div class="summary-section"><h4>No entries yet</h4><p>Go back through the phases and fill in your reflections to see your summary here.</p></div>` + html;
+            }
+
+            document.getElementById('summaryContent').innerHTML = html;
+        }
+
+        // Download Summary
+        function downloadSummary() {
+            const content = document.getElementById('summaryContent').innerText;
+            const blob = new Blob(['KINDNESS ARCHITECTS — Session Summary\n' + '='.repeat(45) + '\n\n' + content], { type: 'text/plain' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'kindness-architects-summary.txt';
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }
+    </script>
+</body>
+</html>
